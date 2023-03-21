@@ -1,4 +1,6 @@
 Defining Schema in SQLAlchemy ORM
+The following listing defines a Post model which can be used to store authors books info.
+
 ''' code
 from sqlalchemy import create_engine, MetaData, Table, Integer, String, \
     Column, DateTime, ForeignKey, Numeric, SmallInteger
@@ -11,7 +13,7 @@ from datetime import datetime
 engine = create_engine("postgres+psycopg2://postgres:pass@localhost/sqlalchemy_tuts")
 
 Base = declarative_base()
-
+#We can peek at the Table instance associated with the model using the __table__ attribute. (>>>Customer.__table__)
 class Customer(Base):
     __tablename__ = 'customers'
     id = Column(Integer(), primary_key=True)
@@ -61,3 +63,9 @@ define at-least one column which must be a part of the primary key.
 The last two points are self-explanatory but the first one deserves a bit of explanation.
 
 The base class maintains a catalog of classes and tables. In other words, the declarative base class wraps the mapper and the MetaData. The mapper maps the subclass to the table and MetaData holds all the information about the database and the tables it contains. Just as in Core, in ORM we use create_all() and drop_all() methods of the MetaData object to create and drop tables.
+
+### Creating Session
+When using SQLAlchemy ORM, we interact with the database using the Session object. The Session object also wraps the database connection and transaction. The transaction implicitly starts as soon as the Session starts communicating with the database and will remain open until the Session is committed, rolled back or closed.
+
+One way to create a Session object is to use the Session class from the sqlalchemy.orm package.
+
