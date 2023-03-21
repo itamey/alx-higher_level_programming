@@ -1,20 +1,20 @@
 Defining Schema in SQLAlchemy ORM
-The following listing defines a Post model which can be used to store authors books info.
+The following listing defines a Post model which can be used to store authors books info.   
 
-''' code
-from sqlalchemy import create_engine, MetaData, Table, Integer, String, \
+    ''' code
+    from sqlalchemy import create_engine, MetaData, Table, Integer, String, \
     Column, DateTime, ForeignKey, Numeric, SmallInteger
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+    from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.orm import relationship
 
-from datetime import datetime
+    from datetime import datetime
 
-engine = create_engine("postgres+psycopg2://postgres:pass@localhost/sqlalchemy_tuts")
+    engine = create_engine("postgres+psycopg2://postgres:pass@localhost/sqlalchemy_tuts")
 
-Base = declarative_base()
-#We can peek at the Table instance associated with the model using the __table__ attribute. (>>>Customer.__table__)
-class Customer(Base):
+    Base = declarative_base()
+    #We can peek at the Table instance associated with the model using the __table__ attribute. (>>>Customer.__table__)
+    class Customer(Base):
     __tablename__ = 'customers'
     id = Column(Integer(), primary_key=True)
     first_name = Column(String(100), nullable=False)
@@ -26,24 +26,24 @@ class Customer(Base):
     orders = relationship("Order", backref='customer')
 
 
-class Item(Base):
+    class Item(Base):
     __tablename__ = 'items'
     id = Column(Integer(), primary_key=True)
     name = Column(String(200), nullable=False)
     cost_price =  Column(Numeric(10, 2), nullable=False)
     selling_price = Column(Numeric(10, 2),  nullable=False)
-#     orders = relationship("Order", backref='customer')
-    
+    #     orders = relationship("Order", backref='customer')
 
-class Order(Base):
+
+    class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer(), primary_key=True)
     customer_id = Column(Integer(), ForeignKey('customers.id'))
     date_placed = Column(DateTime(), default=datetime.now)
     line_items = relationship("OrderLine", secondary="order_lines", backref='order')
-    
 
-class OrderLine(Base):
+
+    class OrderLine(Base):
     __tablename__ = 'order_lines'
     id =  Column(Integer(), primary_key=True)
     order_id = Column(Integer(), ForeignKey('orders.id'))
@@ -52,20 +52,20 @@ class OrderLine(Base):
     item = relationship("Item")
 
 
-Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 '''
 
-For the class to be a valid model, it must do the following:
+For the class to be a valid model, it must do the following:  
 
-Inherit from a declarative base class created by calling declarative_base() function.
-define table name via __tablename__ attribute.
-define at-least one column which must be a part of the primary key.
-The last two points are self-explanatory but the first one deserves a bit of explanation.
+Inherit from a declarative base class created by calling declarative_base() function.   
+define table name via __tablename__ attribute.    
+define at-least one column which must be a part of the primary key.    
+The last two points are self-explanatory but the first one deserves a bit of explanation.   
 
-The base class maintains a catalog of classes and tables. In other words, the declarative base class wraps the mapper and the MetaData. The mapper maps the subclass to the table and MetaData holds all the information about the database and the tables it contains. Just as in Core, in ORM we use create_all() and drop_all() methods of the MetaData object to create and drop tables.
+The base class maintains a catalog of classes and tables. In other words, the declarative base class wraps the mapper and the MetaData. The mapper maps the subclass to the table and MetaData holds all the information about the database and the tables it contains. Just as in Core, in ORM we use create_all() and drop_all() methods of the MetaData object to create and drop tables.     
 
 ### Creating Session
-When using SQLAlchemy ORM, we interact with the database using the Session object. The Session object also wraps the database connection and transaction. The transaction implicitly starts as soon as the Session starts communicating with the database and will remain open until the Session is committed, rolled back or closed.
+When using SQLAlchemy ORM, we interact with the database using the Session object. The Session object also wraps the database connection and transaction. The transaction implicitly starts as soon as the Session starts communicating with the database and will remain open until the Session is committed, rolled back or closed.    
 
-One way to create a Session object is to use the Session class from the sqlalchemy.orm package.
+One way to create a Session object is to use the Session class from the sqlalchemy.orm package.    
 
